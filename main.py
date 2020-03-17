@@ -1,20 +1,13 @@
-import os
-
-from flask import Flask
-
-app = Flask(__name__)
+from telebot import TeleBot, apihelper
+from telebot.types import Message
 
 
-@app.route("/")
-def index():
-    return "Привет от приложения Flask"
+bot = TeleBot('1067102276:AAFej5UUXLYoJVWZjEPqb2gVvbg73GFVSWE')
 
 
-@app.route("/hello")
-def hello():
-    return "Лол ок"
+@bot.message_handler(content_types=['text'])
+def get_message(message: Message):
+    bot.send_message(message.chat.id, message.text)
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+bot.polling()
