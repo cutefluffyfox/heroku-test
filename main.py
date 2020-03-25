@@ -1,7 +1,9 @@
 from flask import Flask
 import sqlite3
+from __init__ import create_database
 
 
+create_database()
 app = Flask(__name__)
 
 
