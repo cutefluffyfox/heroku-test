@@ -1,27 +1,29 @@
-from telebot import TeleBot, apihelper
-from telebot.types import Message
-from random import choice
+from flask import Flask
+import sqlite3
 
 
-bot = TeleBot('1067102276:AAFej5UUXLYoJVWZjEPqb2gVvbg73GFVSWE')
-bot_id = bot.get_me().id
-bot_alias = bot.get_me().username
-running = True
+app = Flask(__name__)
 
 
-@bot.message_handler(content_types=['text'])
-def stop_bot(message: Message):
-    if message.text == '/kill@' + bot_alias:
-        global running
-        running = False
+@app.route('/')
+def main_page():
+    return 'hello'
 
 
-@bot.message_handler(content_types=['new_chat_members'])
-def new_members(message: Message):
-    if message.new_chat_member.id == bot_id:
-        while running:
-            bot.send_message(message.chat.id, choice(['Привет', 'День добрый', 'Здрасьте', 'Рад знакомству',
-                                                      'Я бот', 'Приятно познакомиться', 'Здравия желаю', 'Здоровья']))
+@app.route('/data')
+def data_page():
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    return str(cur.execute('SELECT * FROM test').fetchall())
 
 
-bot.polling()
+@app.route('/<username>/<animal>')
+def add(username: str, animal: str):
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute(f"INSERT INTO test(username, animal) VALUES('{username}', '{animal}')")
+    con.commit()
+    return 'added'
+
+
+app.run()
