@@ -1,12 +1,15 @@
 import sqlite3
-from os import listdir, getcwd
+from os import listdir
+from os.path import join
+database_path = 'static/database'
+database = 'database.db'
 
 
-def create_database(database='database.db'):
-    if database not in listdir(getcwd()):
+def create_database():
+    if database not in listdir(database_path):
         with open(database, 'w'):
             pass
-    con = sqlite3.connect(database)
+    con = sqlite3.connect(join(database_path, database))
     cur = con.cursor()
     tables = {
         'test': ("""
@@ -22,8 +25,8 @@ def create_database(database='database.db'):
             con.commit()
 
 
-def drop_database(database='database.db'):
-    con = sqlite3.connect(database)
+def drop_database():
+    con = sqlite3.connect(join(database_path, database))
     cur = con.cursor()
     cur.execute('DROP TABLE test')
     con.commit()

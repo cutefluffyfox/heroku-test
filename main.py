@@ -1,6 +1,6 @@
-from flask import Flask
+from flask import Flask, jsonify, request
 import sqlite3
-from __init__ import create_database
+from create_database import create_database
 
 
 create_database()
@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def main_page():
-    return 'hello'
+    return jsonify({'ip': request.remote_addr})
 
 
 @app.route('/data')
